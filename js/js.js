@@ -1,50 +1,88 @@
-console.log('hello, console!');
-console.log('Welcome to a Javascript Rock, Paper, Scissors game');
-playGame();
+/**
+ * Step 1: gather all dom elements
+ */
 
+const infButton = document.querySelector("#inf")
+const cavButton = document.querySelector("#cav")
+const artButton = document.querySelector("#art")
+const yourWins = document.querySelector("#your-wins")
+const oppWins = document.querySelector("#opp-wins")
+const viewResult = document.querySelector("#view")
+const allButtons = document.querySelectorAll(".choose")
+let roundsPlayed = 0
 /**
  * This function plays 5 rounds of rock paper scissors
  */
-function playGame() {
-    let computerChoice;
-    let playerChoice;
-    for (let i = 0; i < 5; i++) {
-        computerChoice = getComputerChoice();
-        console.log("computer choice is: " + computerChoice);
-        playerChoice = getPlayerChoice();
-        console.log("player choice is: " + playerChoice);
-        playRound(computerChoice, playerChoice);
-    }
-}
+// shouldn't be needed probable
+// function playGame() {
+//     let computerChoice;
+//     let playerChoice;
+//     for (let i = 0; i < 5; i++) {
+//         computerChoice = getComputerChoice();
+//         console.log("computer choice is: " + computerChoice);
+//         playerChoice = getPlayerChoice();
+//         console.log("player choice is: " + playerChoice);
+//         playRound(computerChoice, playerChoice);
+//     }
+// }
 
 /**
  * This method plays a round of rock paper scissors, and returns /
  * prints the winner 
- * @param {*} computerChoice - A string of a random computer choice retrieved from the console
- * @param {*} playerChoice - A string of a valid player choice retrieved from the console
  */
-function playRound(computerChoice, playerChoice) {
-    if (computerChoice == playerChoice) {
-        console.log("It's a tie!");
-    } else if (computerChoice == "rock") {
-        // here we know players can't be rock
-        // players is paper or scissors
-        if (playerChoice == "paper") {
-            console.log("You win!");
-        } else {
-            console.log("You lose!");
+function playRound(targetId) {
+    if (Number(yourWins.textContent) == 5) {
+        viewResult.textContent = "The battles over, you won!"
+    } else if (Number(oppWins.textContent) == 5) {
+        viewResult.textContent = "The battles over. Our forces were defeated."
+    } else {
+        let computerChoice = getComputerChoice()
+
+        if (computerChoice == targetId) {
+            console.log("It's a tie!");
+            viewResult.textContent = "Our offensive led to a stalemate."
+        } else if (computerChoice == "inf") {
+            // here we know players can't be rock
+            // players is paper or scissors
+            if (targetId == "art") {
+                console.log("You win!");
+                viewResult.textContent = "Our shells devastated an enemy division!"
+                yourWins.textContent = Number(yourWins.textContent) + 1
+            } else {
+                console.log("You lose!");
+                viewResult.textContent = "We were forced to fall back."
+                oppWins.textContent = Number(oppWins.textContent) + 1
+
+            }
+        } else if (computerChoice == "art") {
+            if (targetId == "cav") {
+                console.log("You win!");
+                viewResult.textContent = "A cavalry charge broke through their lines!"
+                yourWins.textContent = Number(yourWins.textContent) + 1
+            } else {
+                console.log("You lose!");
+                viewResult.textContent = "The enemy forced us to retreat after heavy losses."
+                oppWins.textContent = Number(oppWins.textContent) + 1
+
+            }
+        } else { // choice is cavalry
+            if (targetId == "inf") {
+                console.log("You win!");
+                viewResult.textContent = "The guards advance shattered parts of their line!"
+                yourWins.textContent = Number(yourWins.textContent) + 1
+
+            } else {
+                console.log("You lose!");
+                viewResult.textContent = "We couldn't take their fortified position."
+                oppWins.textContent = Number(oppWins.textContent) + 1
+
+            }
         }
-    } else if (computerChoice == "paper") {
-        if (playerChoice == "scissors") {
-            console.log("You win!");
-        } else {
-            console.log("You lose!");
-        }
-    } else { // choice is scissors
-        if (playerChoice == "rock") {
-            console.log("You win!");
-        } else {
-            console.log("You lose!");
+
+        if (Number(yourWins.textContent) == 5) {
+            viewResult.textContent = "The battles over, you won!"
+        } else if (Number(oppWins.textContent) == 5) {
+            viewResult.textContent = "The battles over. Our forces were defeated."
         }
     }
 }
@@ -59,11 +97,11 @@ function getComputerChoice() {
     let randomNumber = Math.random();
     console.log(randomNumber);
     if (randomNumber <= (1 / 3)) {
-        return "rock";
+        return "inf";
     } else if (randomNumber >= (1 / 3) && randomNumber <= (2 / 3)) {
-        return "paper";
+        return "art";
     } else {
-        return "scissors";
+        return "cav";
     }
 }
 
@@ -72,6 +110,8 @@ function getComputerChoice() {
  * returns the choice once its valid
  * @returns A string of a valid player choice retrieved from the console
  */
+
+// shouldn't need this as I can just take the id of the event
 
 function getPlayerChoice() {
     let playerChoice = prompt("Please enter your choice of rock, paper, or scissors: ").toLowerCase();
@@ -82,3 +122,9 @@ function getPlayerChoice() {
     console.log("final choice: " + playerChoice);
     return playerChoice;
 }
+
+allButtons.forEach(function(button) {
+    button.addEventListener("click", function(e) {
+        playRound(e.target.getAttribute('id'));
+    })
+});
